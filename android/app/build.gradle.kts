@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.myapp"
-    compileSdkVersion(34)
+    compileSdkVersion(35)
     ndkVersion = "27.0.12077973"
 
     compileOptions {
