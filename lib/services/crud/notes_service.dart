@@ -151,14 +151,14 @@ class NotesService {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
-    // make sure owner exists in the database with the correct id
+
     final dbUser = await getUser(email: owner.email);
     if (dbUser != owner) {
       throw CouldNotFindUser();
     }
 
     const text = '';
-    // create the note
+  
     final noteId = await db.insert(noteTable, {
       userIdColumn: owner.id,
       textColumn: text,
@@ -255,7 +255,7 @@ class NotesService {
     try {
       await open();
     } on DatabaseAlreadyOpenException {
-      // empty
+      
     }
   }
 
@@ -268,9 +268,8 @@ class NotesService {
       final dbPath = join(docsPath.path, dbName);
       final db = await openDatabase(dbPath);
       _db = db;
-      // create the user table
       await db.execute(createUserTable);
-      // create note table
+    
       await db.execute(createNoteTable);
       await _cacheNotes();
     } on MissingPlatformDirectoryException {
