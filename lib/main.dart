@@ -6,7 +6,7 @@ import 'package:myapp/views/notes/new_notes_view.dart';
 import 'package:myapp/views/notes/notes_view.dart';
 import 'package:myapp/views/register_view.dart';
 import 'package:myapp/views/verify_email_view.dart';
-import 'package:path/path.dart';
+
 
 
 void main() {

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:myapp/services/auth/auth_service.dart';
 import 'package:myapp/services/crud/notes_service.dart';
