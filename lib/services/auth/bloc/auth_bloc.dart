@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:myapp/services/auth/auth_exceptions.dart';
 import 'package:myapp/services/auth/auth_provider.dart';
 import 'package:myapp/services/auth/bloc/auth_event.dart';
 import 'package:myapp/services/auth/bloc/auth_state.dart';
