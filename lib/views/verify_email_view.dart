@@ -2,7 +2,9 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/constants/routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:myapp/services/auth/bloc/auth_bloc.dart';
+import 'package:myapp/services/auth/bloc/auth_event.dart';
 import 'package:myapp/views/notes/notes_view.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -30,7 +32,6 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       });
 
       if (isEmailVerified) {
-
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const NotesView()),
         );
@@ -52,25 +53,17 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           ),
           TextButton(
             onPressed: () async {
-              final user = FirebaseAuth.instance.currentUser;
-              await user?.sendEmailVerification();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Verification email sent!')),
+              context.read<AuthBloc>().add(
+                const AuthEventSendEmailVerification(),
               );
             },
             child: const Text('Send email verification'),
           ),
-          const SizedBox(height: 20),
-          TextButton(
-            onPressed: checkEmailVerification,
-            child: const Text('Check Verification Status'),
-          ),
           TextButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.of(
-                context,
-              ).pushNamedAndRemoveUntil(registerRoute, (route) => false);
+               context.read<AuthBloc>().add(
+                const AuthEventLogOut(),
+              );
             },
             child: const Text('Restart'),
           ),
