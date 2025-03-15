@@ -32,21 +32,6 @@ class FirebaseCloudStorage {
         .map((event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)));
     return allNotes;
   }
-
-  Future<Iterable<CloudNote>> getNotes({required String owneruserId}) async {
-    try {
-      return await notes
-          .where(ownerUserIdFieldName, isEqualTo: owneruserId)
-          .get()
-          .then(
-            (value) =>
-                value.docs.map((doc) => CloudNote.fromSnapshot(doc)),
-          );
-    } catch (e) {
-      throw CouldNotGetAllNotesException();
-    }
-  }
-
   Future<CloudNote> createNewNote({required String ownerUserId}) async {
     final document = await notes.add({
       ownerUserIdFieldName: ownerUserId,
