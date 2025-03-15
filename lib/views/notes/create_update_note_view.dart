@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'package:flutter/material.dart';
 import 'package:myapp/services/auth/auth_service.dart';
 import 'package:myapp/utilities/dialogs/cannot_share_empty_note_dialog.dart';
@@ -60,17 +58,17 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   }
 
   void _deleteNoteIfTextIsEmpty() {
-    final note = _note;
-    if (_textController.text.isEmpty && note != null) {
-      _notesService.deleteNote(documentId: note.documentId);
+    if (_textController.text.isEmpty && _note != null) {
+      _notesService.deleteNote(documentId: _note!.documentId);
     }
   }
 
   void _saveNoteIfTextNotEmpty() async {
-    final note = _note;
-    final text = _textController.text;
-    if (note != null && text.isNotEmpty) {
-      await _notesService.updateNote(documentId: note.documentId, text: text);
+    if (_note != null && _textController.text.isNotEmpty) {
+      await _notesService.updateNote(
+        documentId: _note!.documentId,
+        text: _textController.text,
+      );
     }
   }
 
@@ -85,40 +83,110 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('New Note'),
-      actions: [
-        IconButton(onPressed: ()async {
-            final text = _textController.text;
-            if (_note == null || text.isEmpty){
-              await showCannotShareEmptyNoteDialog(context);
-            } else{
-              Share.share(text);
-            }
-        }, 
-        icon:const Icon(Icons.share),
-         )
-      ],
+      appBar: AppBar(
+        title: const Text(
+          'New Note',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                blurRadius: 10.0,
+                color: Colors.cyanAccent,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: Colors.black87,
+        elevation: 6,
+        shadowColor: Colors.cyanAccent.withOpacity(0.5),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final text = _textController.text;
+              if (_note == null || text.isEmpty) {
+                await showCannotShareEmptyNoteDialog(context);
+              } else {
+                Share.share(text);
+              }
+            },
+            icon: const Icon(Icons.share, color: Colors.white70),
+          ),
+        ],
       ),
-      
       body: FutureBuilder(
         future: createOrGetExistingNote(context),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: 'Start typing your note...',
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  style: const TextStyle(
+                    color: Colors.white, 
+                    fontSize: 18, 
+                    fontWeight: FontWeight.w400,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 15.0,
+                        color: Colors.cyanAccent,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Start typing your note...',
+                    hintStyle: TextStyle(
+                      color: Colors.white54,
+                      fontSize: 16,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 8.0,
+                          color: Colors.blueAccent,
+                          offset: Offset(1, 1),
+                        ),
+                      ],
+                    ),
+                    filled: true,
+                    fillColor: Colors.black54,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.cyanAccent.withOpacity(0.5),
+                        width: 1.5,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.cyanAccent.withOpacity(0.7),
+                        width: 2,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.cyanAccent,
+                        width: 3,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.all(16),
+                  ),
+                  cursorColor: Colors.cyanAccent,
                 ),
               );
             default:
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
           }
         },
       ),
+      backgroundColor: Colors.black87,
     );
   }
 }

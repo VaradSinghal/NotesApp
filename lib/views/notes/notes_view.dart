@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/constants/routes.dart';
@@ -32,36 +30,41 @@ class _NotesViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212), // Dark background
       appBar: AppBar(
-        title: const Text('Your Notes'),
+        backgroundColor: const Color(0xFF1E1E1E), // Darker app bar
+        title: const Text(
+          'Your Notes',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // White text for contrast
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
               Navigator.of(context).pushNamed(createUpdateNoteRoute);
             },
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add, size: 28, color: Colors.white),
           ),
           PopupMenuButton<MenuAction>(
+            color: Colors.black87, // Dark popup menu
             onSelected: (value) async {
               switch (value) {
                 case MenuAction.logout:
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
-                    context.read<AuthBloc>().add(
-                      const AuthEventLogOut(),
-                    );
-                    
+                    context.read<AuthBloc>().add(const AuthEventLogOut());
                   }
               }
             },
-            itemBuilder: (context) {
-              return const [
-                PopupMenuItem<MenuAction>(
-                  value: MenuAction.logout,
-                  child: Text('Log Out'),
-                ),
-              ];
-            },
+            itemBuilder: (context) => [
+              const PopupMenuItem<MenuAction>(
+                value: MenuAction.logout,
+                child: Text('Log Out', style: TextStyle(fontSize: 18, color: Colors.white)),
+              ),
+            ],
           ),
         ],
       ),
@@ -73,22 +76,31 @@ class _NotesViewState extends State<NotesView> {
             case ConnectionState.active:
               if (snapshot.hasData) {
                 final allNotes = snapshot.data as Iterable<CloudNote>;
-                return NotesListView(
-                  notes: allNotes,
-                  onDeleteNote: (note) async {
-                    await _notesService.deleteNote(documentId: note.documentId);
-                  },
-                  onTap: (note) {
-                    Navigator.of(
-                      context,
-                    ).pushNamed(createUpdateNoteRoute, arguments: note);
-                  },
+                if (allNotes.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No notes yet. Click + to add one!',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white70),
+                    ),
+                  );
+                }
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: NotesListView(
+                    notes: allNotes,
+                    onDeleteNote: (note) async {
+                      await _notesService.deleteNote(documentId: note.documentId);
+                    },
+                    onTap: (note) {
+                      Navigator.of(context).pushNamed(createUpdateNoteRoute, arguments: note);
+                    },
+                  ),
                 );
               } else {
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator(color: Colors.white));
               }
             default:
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator(color: Colors.white));
           }
         },
       ),

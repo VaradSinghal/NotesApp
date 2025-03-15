@@ -1,5 +1,3 @@
-// ignore_for_file: use_super_parameters, library_private_types_in_public_api, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/services/auth/bloc/auth_bloc.dart';
@@ -40,43 +38,107 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             await showPasswordResetSentDialog(context);
           }
           if (state.exception != null) {
-            await showErrorDialog(context, 'We could not process ypur request. Please make sure that you are a registered user');
+            await showErrorDialog(
+              context,
+              'We could not process your request. Please make sure that you are a registered user',
+            );
           }
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text('Forgot Password')),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text('If you forgot your password, simply enter your email and we will send you a password reset link '),
-                TextField(
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  autofocus: true,
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    hintText: 'Your email address...',
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          padding: EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: MediaQuery.of(context).size.height * 0.05, // Responsive padding
+          ),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF36D1DC), Color(0xFF5B86E5)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(Icons.lock_reset, size: 80, color: Colors.white),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Forgot Password?",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    final email = _controller.text;
-                    context.read<AuthBloc>().add(
-                      AuthEventForgotPassword(email: email),
-                    );
-                  },
-                  child: Text('Send me password reser link'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(const AuthEventLogOut());
-                  },
-                  child: Text('Back to login page'),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min, // Prevents overflow
+                        children: [
+                          const Text(
+                            "Enter your email below and we'll send you a link to reset your password.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            keyboardType: TextInputType.emailAddress,
+                            autocorrect: false,
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              hintText: 'Your email address...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              prefixIcon: const Icon(Icons.email),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              final email = _controller.text;
+                              context.read<AuthBloc>().add(
+                                    AuthEventForgotPassword(email: email),
+                                  );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const SizedBox(
+                              width: double.infinity,
+                              child: Center(child: Text('Send Reset Link', style: TextStyle(fontSize: 18))),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          TextButton(
+                            onPressed: () {
+                              context.read<AuthBloc>().add(const AuthEventLogOut());
+                            },
+                            child: const Text('Back to login page', style: TextStyle(color: Colors.blueAccent)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
